@@ -1,4 +1,5 @@
 import { textToSpeech } from "@/server/use-cases/text-to-speech";
+import { ttsCalculateSpeechLenInS } from "@/server/use-cases/tts-calculate-speech-len";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 const DEFAULT_NAME = new Date().toISOString();
@@ -8,6 +9,12 @@ export default async function handler(
   res: NextApiResponse
 ) {
   try {
+    if (req.headers.action === "calculate") {
+      return res.status(200).json({
+        data: ttsCalculateSpeechLenInS(req.body.text),
+      });
+    }
+
     console.log("[text]", req.body.text);
     const file = await textToSpeech(req.body.text);
 
